@@ -1,11 +1,10 @@
-import { Member } from '@libs/features/member/domain/member';
+import { IdGenerator } from '@libs/common/id-generator/id-generator';
 
 export type MemberId = string & { _brand: 'MemberId' };
 
 export namespace MemberId {
   export function next(): MemberId {
-    // todo
-    return '1' as MemberId;
+    return IdGenerator.nextId() as MemberId;
   }
 
   export function of(value: string): MemberId {

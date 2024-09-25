@@ -3,7 +3,7 @@ import { Member } from '@libs/features/member/domain/member';
 import { MemberRepository } from '@libs/features/member/domain/member.repository';
 
 @Injectable()
-export class MemberSignupValidator {
+export class MemberSignUpValidator {
   constructor(
     private readonly memberRepository: MemberRepository,
   ) {}

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Member } from '@libs/features/member/domain/member';
-import { MemberSignupValidator } from '@libs/features/member/domain/member-signup.validator';
+import { MemberSignUpValidator } from '@libs/features/member/domain/member-sign-up.validator';
 import { MemberNickname } from '@libs/features/member/domain/types/member-nickname';
 import { MemberPassword } from '@libs/features/member/domain/types/member-password';
 import { MemberRepository } from '@libs/features/member/domain/member.repository';
@@ -11,7 +11,7 @@ import { MemberApi } from '@libs/features/member/api/member.api';
 @Injectable()
 export class MemberApiImpl implements MemberApi {
   constructor(
-    private readonly memberSignUpValidator: MemberSignupValidator,
+    private readonly memberSignUpValidator: MemberSignUpValidator,
     private readonly memberRepository: MemberRepository,
   ) {}
 
