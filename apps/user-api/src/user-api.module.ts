@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IdGeneratorModule } from '@libs/common/id-generator/id-generator.module';
+import { IdGeneratorModule } from '@libs/common/modules/id-generator/id-generator.module';
 
 @Module({
   imports: [

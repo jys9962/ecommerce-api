@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { NodeIdGetter } from '@libs/common/id-generator/internal/node-id-getter';
+import { NodeIdGetter } from '@libs/common/modules/id-generator/internal/node-id-getter';
 
 describe('NodeIdGetter', () => {
   let redis: Redis;

@@ -1,4 +1,4 @@
-import { IdGenerator } from '@libs/common/id-generator/id-generator';
+import { IdGenerator } from '@libs/common/modules/id-generator/id-generator';
 
 export type MemberId = string & { _brand: 'MemberId' };
 

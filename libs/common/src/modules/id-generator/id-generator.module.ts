@@ -1,7 +1,7 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
-import { NodeIdGetter } from '@libs/common/id-generator/internal/node-id-getter';
-import { IdGenerator } from '@libs/common/id-generator/id-generator';
+import { NodeIdGetter } from '@libs/common/modules/id-generator/internal/node-id-getter';
+import { IdGenerator } from '@libs/common/modules/id-generator/id-generator';
 import { RedisModule } from '@libs/infrastructure/redis/redis.module';
 
 const BASE_DATE = new Date('2020-01-01');

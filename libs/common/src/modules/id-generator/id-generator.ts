@@ -1,4 +1,4 @@
-import { SnowflakeIdGenerator } from '@libs/common/id-generator/internal/snowflake-id-generator';
+import { SnowflakeIdGenerator } from '@libs/common/modules/id-generator/internal/snowflake-id-generator';
 
 export class IdGenerator {
   private static generator: SnowflakeIdGenerator;

@@ -1,7 +1,7 @@
 import { PointDetail } from '@libs/features/point/domain/internal/detail/point-detail';
 import { PointAmount } from '@libs/features/point/domain/types/point-amount';
 import { PointAddedDetail } from '@libs/features/point/domain/internal/detail/point-added-detail';
-import { IdGenerator } from '@libs/common/id-generator/id-generator';
+import { IdGenerator } from '@libs/common/modules/id-generator/id-generator';
 
 export class PointRefundDetail implements PointDetail {
 

@@ -2,14 +2,12 @@ import { CartApi } from '@libs/features/cart/api/cart.api'
 import { CartItem } from '@libs/features/cart/domain/cart-item'
 import { CartRepository } from '@libs/features/cart/domain/cart.repository'
 import { CartItemComparator } from '@libs/features/cart/domain/cart-item-comparator'
-import { CartItemOptionSerializer } from '@libs/features/cart/domain/cart-item-option-serializer'
 
 export class CartApiImpl<T> implements CartApi<T> {
 
   constructor(
     private readonly cartRepository: CartRepository<T>,
     private readonly cartItemComparator: CartItemComparator<T>,
-    private readonly cartItemOptionSerializer: CartItemOptionSerializer<T>,
   ) {}
 
   async add(
