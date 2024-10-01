@@ -1,8 +1,8 @@
-import { MemberPointRepository } from '@/feature/point/domain/member-point.repository';
-import { MemberPoint } from '@/feature/point/domain/member-point';
-import { PointCommandMapper } from '@/feature/point/repository/mapper/point-command.mapper';
-import { Injectable } from '@nestjs/common';
-import { PointCommandDynamo } from '@/feature/point/repository/dynamo/point-command.dynamo';
+import { Injectable } from '@nestjs/common'
+import { MemberPointRepository } from '@libs/features/point/domain/member-point.repository'
+import { PointCommandDynamo } from '@libs/features/point/infra/dynamo/point-command.dynamo'
+import { MemberPoint } from '@libs/features/point/domain/member-point'
+import { PointCommandMapper } from '@libs/features/point/infra/mapper/point-command.mapper'
 
 @Injectable()
 export class DynamoMemberPointRepository implements MemberPointRepository {
@@ -12,25 +12,25 @@ export class DynamoMemberPointRepository implements MemberPointRepository {
   ) {}
 
   async find(
-    memberId: bigint,
+    memberId: string,
   ): Promise<MemberPoint> {
-    const entityResult = await this.pointCommandDynamo.find(memberId);
+    const entityResult = await this.pointCommandDynamo.find(memberId)
     if (entityResult.isError) {
-      throw Error();
+      throw Error()
     }
     if (entityResult.data.length === 0) {
-      return MemberPoint.create();
+      return MemberPoint.create()
     }
 
     const commandList = entityResult.data.map(
       (command) => PointCommandMapper.toDomain(command),
-    );
+    )
 
-    return MemberPoint.replay(commandList);
+    return MemberPoint.replay(commandList)
   }
 
   async save(
-    memberId: bigint,
+    memberId: string,
     memberPoint: MemberPoint,
   ): Promise<void> {
     const newLogEntityList = memberPoint
@@ -42,22 +42,22 @@ export class DynamoMemberPointRepository implements MemberPointRepository {
       .filter(t => t.id == null)
       .map(
         t => {
-          t.id = memberPoint.nextId();
-          return PointCommandMapper.toPersistence(memberId, t);
+          t.id = memberPoint.nextId()
+          return PointCommandMapper.toPersistence(memberId, t)
         },
-      );
+      )
 
     if (newLogEntityList.length === 0) {
-      return;
+      return
     }
 
-    const saveResult = await this.pointCommandDynamo.save(newLogEntityList);
+    const saveResult = await this.pointCommandDynamo.save(newLogEntityList)
     if (saveResult.isOk) {
-      return;
+      return
     }
 
     // todo
-    const reasons = saveResult.error.CancellationReasons || [];
-    throw Error();
+    const reasons = saveResult.error.CancellationReasons || []
+    throw Error()
   }
 }

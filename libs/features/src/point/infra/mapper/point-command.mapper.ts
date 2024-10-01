@@ -1,11 +1,11 @@
-import { PointCommand } from '@/feature/point/domain/internal/command/point-command';
-import { IPointCommandEntity, PointCommandEntity } from '@/feature/point/repository/entity/point-command.entity';
-import { Timestamp } from '@/common/branded-types/timestamp/timestamp';
+import { PointCommand } from '@libs/features/point/domain/internal/command/point-command'
+import { IPointCommandEntity, PointCommandEntity } from '@libs/features/point/infra/entity/point-command.entity'
+import { Timestamp } from '@libs/common/types/timestamp'
 
 export namespace PointCommandMapper {
 
   export const toPersistence = (
-    memberId: bigint,
+    memberId: string,
     pointCommand: PointCommand,
   ): IPointCommandEntity => {
     return {
@@ -25,13 +25,13 @@ export namespace PointCommandMapper {
       transactionId: ('transactionId' in pointCommand)
         ? pointCommand.transactionId?.toString() ?? null
         : null,
-    };
-  };
+    }
+  }
 
   export const toDomain = (
     entity: IPointCommandEntity,
   ): PointCommand => {
-    const fromEntity = PointCommandEntity.parse(entity);
+    const fromEntity = PointCommandEntity.parse(entity)
 
     return <PointCommand>{
       id: fromEntity.sk.id
@@ -47,8 +47,8 @@ export namespace PointCommandMapper {
       expirationAt: entity.expirationAt
         ? new Date(entity.expirationAt)
         : undefined,
-    };
-  };
+    }
+  }
 
 
 }

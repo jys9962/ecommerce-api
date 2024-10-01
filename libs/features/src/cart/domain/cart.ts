@@ -27,7 +27,6 @@ export class Cart<T> {
     }
   }
 
-
   update(
     cartItemId: string,
     param: CartItem.Param<T>,
@@ -40,8 +39,10 @@ export class Cart<T> {
 
     theItem.update(param)
     const sameItem = this.items.find(
-      t => t.id !== cartItemId
-           && comparator.isSame(t, theItem),
+      (t) => {
+        return t.id !== cartItemId &&
+               comparator.isSame(t, theItem)
+      },
     )
 
     if (!sameItem) {
@@ -49,12 +50,12 @@ export class Cart<T> {
     }
 
     sameItem.addQuantity(theItem.quantity)
-    this.delete(cartItemId)
+    this.delete(theItem.id)
   }
 
   delete(cartItemId: string) {
-    const find = this.items.findIndex(t => t.id === cartItemId)
-    if (!find) {
+    const found = this.items.find(t => t.id === cartItemId)
+    if (!found) {
       throw Error()
     }
 

@@ -23,7 +23,7 @@ export namespace Result {
       isOk: true,
       isError: false,
       data: data,
-    };
+    }
   }
 
   export function err(): Err<void>
@@ -33,6 +33,6 @@ export namespace Result {
       isOk: false,
       isError: true,
       error: error,
-    };
+    }
   }
 }

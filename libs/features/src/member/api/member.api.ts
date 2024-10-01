@@ -1,4 +1,4 @@
-import { Member } from '@libs/features/member/domain/member';
+import { Member } from '@libs/features/member/domain/member'
 
 export abstract class MemberApi {
 
@@ -9,7 +9,7 @@ export abstract class MemberApi {
    * @param nickname
    * @param password
    */
-  abstract signUp(
+  abstract register(
     email: string,
     nickname: string,
     password: string,

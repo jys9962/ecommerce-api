@@ -15,7 +15,7 @@ export class MemberApiImpl implements MemberApi {
     private readonly memberRepository: MemberRepository,
   ) {}
 
-  async signUp(
+  async register(
     email: string,
     nickname: string,
     password: string,

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DynamoDBDocumentClient, QueryCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
-import { IPointCommandEntity, PointCommandEntity } from '@/feature/point/repository/entity/point-command.entity';
-import { Result } from '@/libs/result/result';
 import { TransactionCanceledException } from '@aws-sdk/client-dynamodb';
+import { Result } from '@libs/common/model/result/result'
+import { IPointCommandEntity, PointCommandEntity } from '@libs/features/point/infra/entity/point-command.entity'
 
 @Injectable()
 export class PointCommandDynamo {
@@ -12,8 +12,9 @@ export class PointCommandDynamo {
   ) {}
 
   async find(
-    memberId: bigint,
+    memberId: string,
   ): Promise<Result<IPointCommandEntity[], any>> {
+
     try {
       const output = await this.dynamoClient.send(
         new QueryCommand({
@@ -26,12 +27,12 @@ export class PointCommandDynamo {
           },
           ConsistentRead: true,
         }),
-      );
+      )
       return Result.ok(
         (output.Items || []) as IPointCommandEntity[],
-      );
+      )
     } catch (e: unknown) {
-      return Result.err();
+      return Result.err()
     }
   }
 

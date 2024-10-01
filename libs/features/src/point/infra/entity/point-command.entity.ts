@@ -1,6 +1,6 @@
-import { PointAmount } from '@/feature/point/domain/branded-types/point-amount';
-import { Timestamp } from '@/common/branded-types/timestamp/timestamp';
-import { DynamoEntityBuilder } from '@jys9962/typed-dynamo';
+import { DynamoEntityBuilder } from '@jys9962/typed-dynamo'
+import { PointAmount } from '@libs/features/point/domain/types/point-amount'
+import { Timestamp } from '@libs/common/types/timestamp'
 
 export const PointCommandEntity = DynamoEntityBuilder
   .create({
@@ -15,6 +15,6 @@ export const PointCommandEntity = DynamoEntityBuilder
     expirationAt: Timestamp | null
     createdAt: Timestamp
   }>()
-  .build();
+  .build()
 
 export type IPointCommandEntity = DynamoEntityBuilder.Type<typeof PointCommandEntity>

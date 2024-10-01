@@ -1,7 +1,7 @@
 import { CartItem } from '@libs/features/cart/domain/cart-item'
 import { CartItemOptionSerializer } from '@libs/features/cart/domain/cart-item-option-serializer'
 import { CartItemEntity } from '@libs/features/cart/infra/cart-item.entity'
-import { Timestamp } from '@libs/common/type/timestamp'
+import { Timestamp } from '@libs/common/types/timestamp'
 
 export class CartItemMapper<T> {
   constructor(

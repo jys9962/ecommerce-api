@@ -13,5 +13,7 @@ export class MemberSignUpValidator {
     if (isEmailDuplicated) {
       throw Error();
     }
+
+
   }
 }

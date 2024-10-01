@@ -1,17 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AuthAppService } from './auth-app.service';
-import { SignUpDto } from './dto/sign-up.dto';
-import { SignInDto } from './dto/sign-in.dto';
+import { Body, Controller, Get, Post } from '@nestjs/common'
+import { SignInDto } from './handler/sign-in/sign-in.dto'
 
 @Controller('members')
 export class UserAuthController {
-  constructor(private readonly memberService: AuthAppService) {}
+  constructor() {}
 
   @Post('sign-up')
   // fixture 와 함께 swagger 사용하기
-  async signUp(
-    @Body() dto: SignUpDto,
-  ) {
+  async signUp() {
   }
 
   @Post('sign-in')

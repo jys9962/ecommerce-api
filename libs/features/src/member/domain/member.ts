@@ -1,15 +1,16 @@
-import { MemberId } from '@libs/features/member/domain/types/member-id';
-import { MemberNickname } from '@libs/features/member/domain/types/member-nickname';
-import { MemberPassword } from '@libs/features/member/domain/types/member-password';
-import { MemberEmail } from '@libs/features/member/domain/types/member-email';
+import { MemberId } from '@libs/features/member/domain/types/member-id'
+import { MemberNickname } from '@libs/features/member/domain/types/member-nickname'
+import { MemberPassword } from '@libs/features/member/domain/types/member-password'
+import { MemberEmail } from '@libs/features/member/domain/types/member-email'
 
 export class Member {
-  private constructor(
-    public readonly id: MemberId,
-    public readonly email: MemberEmail,
-    public readonly nickname: MemberNickname,
-    public readonly password: MemberPassword,
-    public readonly createdAt: Date,
+
+  constructor(
+    public id: MemberId,
+    public email: MemberEmail,
+    public nickname: MemberNickname,
+    public password: MemberPassword,
+    public createdAt: Date,
   ) {}
 
   static create(
@@ -23,14 +24,13 @@ export class Member {
       nickname,
       password,
       new Date(),
-    );
+    )
   }
 
   isValidPassword(
     inputPassword: string,
   ) {
-    const isMatched = MemberPassword.isMatch(this.password, inputPassword);
-    return isMatched;
+    return MemberPassword.isMatch(this.password, inputPassword)
   }
 
 }

@@ -1,4 +1,4 @@
-import { Result } from '@libs/common/result/result';
+import { Result } from '@libs/common/model/result/result';
 
 describe('Result', function () {
   it('ok', async function () {
