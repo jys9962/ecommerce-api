@@ -1,30 +1,24 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import Redis from 'ioredis';
-
-let redis: Redis;
+import { DynamicModule, Module } from '@nestjs/common'
+import Redis from 'ioredis'
+import { RedisFactory } from '@libs/infrastructure/redis/redis.factory'
+import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub'
+import { RedisPubSubImpl } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub.impl'
 
 @Module({
   providers: [
+    RedisFactory,
     {
       provide: Redis,
-      useFactory: () => {
-        if (!redis) {
-          throw Error();
-        }
-        return redis;
-      },
+      useFactory: (factory: RedisFactory) => factory.create(),
+      inject: [RedisFactory],
+    },
+    {
+      provide: RedisPubSub,
+      useClass: RedisPubSubImpl,
     },
   ],
   exports: [
     Redis,
   ],
 })
-export class RedisModule {
-  static forRoot(): DynamicModule {
-    redis = new Redis();
-
-    return {
-      module: RedisModule,
-    };
-  }
-}
+export class RedisModule {}
