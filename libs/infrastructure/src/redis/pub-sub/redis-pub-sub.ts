@@ -1,8 +1,11 @@
-import Redis from 'ioredis'
-
 export abstract class RedisPubSub {
 
   abstract subscribe(
+    channel: string,
+    callback: Function,
+  ): void
+
+  abstract unsubscribe(
     channel: string,
     callback: Function,
   ): void

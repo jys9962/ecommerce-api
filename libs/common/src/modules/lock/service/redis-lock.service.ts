@@ -24,8 +24,8 @@ export class RedisLockService implements LockService {
         if (Date.now() > timeoutAt) {
           return
         }
-        await this.redis.del(lockName)
-        await this.redisPubSub.publish(lockName, '')
+
+        await this.releaseLock(lockName, timeoutAt)
       },
     }
   }
@@ -40,9 +40,41 @@ export class RedisLockService implements LockService {
     if (result === 'OK') {
       return timeoutAt
     }
-
-    await new Promise(resolve => this.redisPubSub.subscribe(lockName, resolve))
+    await this.waitRetry(lockName)
 
     return this.acquireLock(lockName, timeout)
+  }
+
+  private waitRetry(
+    lockName: string,
+  ) {
+    return new Promise(resolve => {
+      const callback = () => {
+        resolve(undefined)
+        this.redisPubSub.unsubscribe(lockName, callback)
+      }
+      return this.redisPubSub.subscribe(lockName, callback)
+    })
+  }
+
+  private async releaseLock(
+    lockName: string,
+    timeoutAt: number,
+  ): Promise<void> {
+    const script = `
+       if redis.call("get", KEYS[1]) == ARGV[1] then
+         return redis.call("del", KEYS[1])
+       else
+         return 0
+       end
+     `
+
+    const result = await this.redis.eval(script, 1, lockName, timeoutAt.toString())
+
+    if (result != 1) {
+      return
+    }
+
+    await this.redisPubSub.publish(lockName, '')
   }
 }

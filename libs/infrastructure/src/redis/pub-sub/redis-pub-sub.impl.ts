@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable, OnModuleInit } from '@nestjs/common'
 import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub'
 import Redis from 'ioredis'
 import { RedisFactory } from '@libs/infrastructure/redis/redis.factory'
@@ -6,6 +6,7 @@ import { RedisFactory } from '@libs/infrastructure/redis/redis.factory'
 @Injectable()
 export class RedisPubSubImpl implements RedisPubSub, OnModuleInit {
   static readonly CHANNEL_PREFIX = 'dist.'
+
   private subscribeList = new Map<string, Function[]>()
   private subscriber: Redis
 
@@ -36,6 +37,22 @@ export class RedisPubSubImpl implements RedisPubSub, OnModuleInit {
     this.subscribeList.set(channel, list)
   }
 
+  unsubscribe(
+    channel: string,
+    callback: Function,
+  ): void {
+    const list = (
+      this.subscribeList.get(channel) || []
+    ).filter(cb => cb !== callback)
+
+    if (list.length === 0) {
+      this.subscribeList.delete(channel)
+    } else {
+      this.subscribeList.set(channel, list)
+    }
+  }
+
+
   async onModuleInit() {
     const channelPattern = `${RedisPubSubImpl.CHANNEL_PREFIX}*`
     await new Promise(resolve => {
@@ -65,7 +82,6 @@ export class RedisPubSubImpl implements RedisPubSub, OnModuleInit {
         return
       }
 
-      this.subscribeList.delete(userChannel)
       list.forEach((callback) => callback(userChannel, message))
     })
   }
