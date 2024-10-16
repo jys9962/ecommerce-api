@@ -1,24 +1,27 @@
 import { Module, OnModuleInit } from '@nestjs/common'
 import { RedisModule } from '@libs/infrastructure/redis/redis.module'
-import { MutexService } from '@libs/common/modules/mutex/service/mutex.service'
-import { MutexServiceImpl } from '@libs/common/modules/mutex/service/mutex.service.impl'
-import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core'
-import { DEFAULT_RETRY_DELAY, DEFAULT_TIMEOUT } from '@libs/common/modules/mutex/constants/mutex.constants'
-import { Mutex } from '@libs/common/modules/mutex/decorator/mutex.decorator'
+import { LockService } from '@libs/common/modules/lock/service/lock.service'
+import { RedisLockService } from '@libs/common/modules/lock/service/redis-lock.service'
+import { DiscoveryModule, DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core'
+import { DEFAULT_TIMEOUT } from '@libs/common/modules/lock/constants/lock.constants'
+import { UseLock } from '@libs/common/modules/lock/decorator/use-lock.decorator'
 
 
 @Module({
-  imports: [RedisModule],
+  imports: [
+    RedisModule,
+    DiscoveryModule,
+  ],
   providers: [
     {
-      provide: MutexService,
-      useClass: MutexServiceImpl,
+      provide: LockService,
+      useClass: RedisLockService,
     },
   ],
 })
-export class MutexModule implements OnModuleInit {
+export class LockModule implements OnModuleInit {
   constructor(
-    private readonly lockService: MutexService,
+    private readonly lockService: LockService,
     private readonly discoveryService: DiscoveryService,
     private readonly metadataScanner: MetadataScanner,
     private readonly reflector: Reflector,
@@ -33,7 +36,7 @@ export class MutexModule implements OnModuleInit {
       .forEach(({ metatype, instance }) => {
         const methodNames = this.metadataScanner.getAllMethodNames(Object.getPrototypeOf(instance))
         for (const methodName of methodNames) {
-          const option = this.reflector.get<Mutex.Option<any>>(Mutex.key, instance[methodName])
+          const option = this.reflector.get<UseLock.Option<any>>(UseLock.key, instance[methodName])
           if (!option) {
             continue
           }
@@ -43,7 +46,6 @@ export class MutexModule implements OnModuleInit {
             const lock = await this.lockService.getLock(
               option.name(args),
               option.timeout ?? DEFAULT_TIMEOUT,
-              option.retryDelay ?? DEFAULT_RETRY_DELAY,
             )
             try {
               return await originalMethod.call(instance, ...args)

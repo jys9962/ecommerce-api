@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import Redis from 'ioredis'
 import { RedisFactory } from '@libs/infrastructure/redis/redis.factory'
 import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub'
@@ -19,6 +19,7 @@ import { RedisPubSubImpl } from '@libs/infrastructure/redis/pub-sub/redis-pub-su
   ],
   exports: [
     Redis,
+    RedisPubSub,
   ],
 })
 export class RedisModule {}

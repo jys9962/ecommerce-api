@@ -1,19 +1,18 @@
 import { SetMetadata } from '@nestjs/common'
 
 
-export function Mutex<Method extends (...args: any) => any>(
-  option: Mutex.Option<Method>,
+export function UseLock<Method extends (...args: any) => any>(
+  option: UseLock.Option<Method>,
 ): MethodDecorator {
-  return SetMetadata(Mutex.key, option)
+  return SetMetadata(UseLock.key, option)
 }
 
 
-export namespace Mutex {
+export namespace UseLock {
   export const key = Symbol('lock')
 
   export type Option<Method extends (...args: any) => any> = {
     name: (args: Parameters<Method>) => string,
     timeout?: number,
-    retryDelay?: number
   }
 }

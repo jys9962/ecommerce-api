@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common'
-import { MutexService } from '@libs/common/modules/mutex/service/mutex.service'
-import { Doable } from '@libs/common/modules/mutex/model/doable'
+import { LockService } from '@libs/common/modules/lock/service/lock.service'
+import { Doable } from '@libs/common/modules/lock/model/doable'
 import Redis from 'ioredis'
-import { sleep } from '@libs/common/util/global-function'
+import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub'
 
 @Injectable()
-export class MutexServiceImpl implements MutexService {
+export class RedisLockService implements LockService {
 
   constructor(
     private readonly redis: Redis,
+    private readonly redisPubSub: RedisPubSub,
   ) {}
 
   async getLock(
     name: string,
     timeout: number,
-    retryDelay: number,
   ): Promise<Doable> {
     const lockName = `lock.${name}`
-    const timeoutAt = await this.acquireLock(lockName, timeout, retryDelay)
+    const timeoutAt = await this.acquireLock(lockName, timeout)
 
     return {
       done: async () => {
         if (Date.now() > timeoutAt) {
           return
         }
-
         await this.redis.del(lockName)
+        await this.redisPubSub.publish(lockName, '')
       },
     }
   }
@@ -33,7 +33,6 @@ export class MutexServiceImpl implements MutexService {
   private async acquireLock(
     lockName: string,
     timeout: number,
-    retryDelay: number,
   ): Promise<number> {
     const timeoutAt = Date.now() + timeout + 1
 
@@ -42,7 +41,8 @@ export class MutexServiceImpl implements MutexService {
       return timeoutAt
     }
 
-    await sleep(retryDelay)
-    return this.acquireLock(lockName, timeout, retryDelay)
+    await new Promise(resolve => this.redisPubSub.subscribe(lockName, resolve))
+
+    return this.acquireLock(lockName, timeout)
   }
 }
