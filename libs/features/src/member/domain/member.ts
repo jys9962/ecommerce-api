@@ -27,10 +27,4 @@ export class Member {
     )
   }
 
-  isValidPassword(
-    inputPassword: string,
-  ) {
-    return MemberPassword.isMatch(this.password, inputPassword)
-  }
-
 }

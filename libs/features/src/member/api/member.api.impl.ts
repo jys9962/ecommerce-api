@@ -19,7 +19,7 @@ export class MemberApiImpl implements MemberApi {
     email: string,
     nickname: string,
     password: string,
-  ): Promise<Member> {
+  ): Promise<string> {
     const member = Member.create(
       MemberEmail.of(email),
       MemberNickname.of(nickname),
@@ -29,7 +29,7 @@ export class MemberApiImpl implements MemberApi {
     await this.memberSignUpValidator.validate(member);
     await this.memberRepository.save(member);
 
-    return member;
+    return member.id;
   }
 
   async findById(
@@ -44,15 +44,11 @@ export class MemberApiImpl implements MemberApi {
 
   async findByEmail(
     email: string,
-    password: string,
-  ): Promise<Member> {
+  ): Promise<Member | null> {
     const member = await this.memberRepository.findByEmail(
       MemberEmail.of(email),
     );
     if (!member) {
-      throw Error();
-    }
-    if (!member.isValidPassword(password)) {
       throw Error();
     }
 

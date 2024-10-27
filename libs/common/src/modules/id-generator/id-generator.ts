@@ -15,6 +15,10 @@ export class IdGenerator {
   }
 
   static nextId(): string {
+    if (!this.generator && process.env.NODE_ENV === 'test') {
+      this.generator = new SnowflakeIdGenerator(1, new Date());
+    }
+
     if (!this.generator) {
       throw Error('no init');
     }
