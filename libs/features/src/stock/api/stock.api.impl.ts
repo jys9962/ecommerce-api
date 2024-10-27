@@ -1,42 +1,56 @@
-import { Injectable } from '@nestjs/common'
-import { StockApi } from '@libs/features/stock/api/stock.api'
-import { StockDto } from '@libs/features/stock/api/stock.dto'
-import { Mutex } from '@libs/common/modules/mutex/decorator/mutex.decorator'
+import { Injectable } from '@nestjs/common';
+import { StockApi } from '@libs/features/stock/api/stock.api';
+import { UseLock } from '@libs/common/modules/lock/decorator/use-lock.decorator';
+import { StockRepository } from '@libs/features/stock/domain/stock.repository';
 
 @Injectable()
 export class StockApiImpl implements StockApi {
 
-  constructor() {}
+  constructor(
+    private readonly stockRepository: StockRepository,
+  ) {}
 
-  get(code: string[]): Promise<StockDto[]> {
-    return Promise.resolve([])
-  }
-
-  @Mutex<StockApi['update']>({
+  @UseLock<StockApi['get']>({
     name: ([code]) => `stock.${code}`,
   })
-  update(
+  async get(code: string): Promise<number | null> {
+    const quantity = await this.stockRepository.find(code);
+    return quantity || null;
+  }
+
+  @UseLock<StockApi['update']>({
+    name: ([code]) => `stock.${code}`,
+  })
+  async update(
     code: string,
     quantity: number,
-  ): Promise<StockDto[]> {
-    return Promise.resolve([])
+  ): Promise<number> {
+    const current = await this.stockRepository.find(code) || 0;
+    const next = current + quantity;
+
+    if (next < 0) {
+      throw Error();
+    }
+
+    await this.stockRepository.save(code, next);
+    return next;
   }
 
-  @Mutex<StockApi['set']>({
+  @UseLock<StockApi['set']>({
     name: ([code]) => `stock.${code}`,
   })
-  set(
+  async set(
     code: string,
     quantity: number,
   ): Promise<void> {
-    return Promise.resolve(undefined)
+    await this.stockRepository.save(code, quantity);
   }
 
-  @Mutex<StockApi['delete']>({
+  @UseLock<StockApi['delete']>({
     name: ([code]) => `stock.${code}`,
   })
-  delete(code: string[]): Promise<void> {
-    return Promise.resolve(undefined)
+  async delete(code: string): Promise<void> {
+    await this.stockRepository.delete(code);
   }
 
 }

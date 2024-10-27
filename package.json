@@ -63,7 +63,7 @@
       "ts"
     ],
     "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testRegex": ".*\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -74,12 +74,13 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/",
-      "<rootDir>/libs/"
+      "<rootDir>/libs/",
+      "<rootDir>/test/"
     ],
     "moduleNameMapper": {
       "^@libs/infrastructure(|/.*)$": "<rootDir>/libs/infrastructure/src/$1",
-      "^@libs/domain(|/.*)$": "<rootDir>/libs/domain/src/$1",
-      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@libs/features(|/.*)$": "<rootDir>/libs/features/src/$1"
     }
   }
 }

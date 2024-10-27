@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
-import { LockService } from '@libs/common/modules/lock/service/lock.service'
-import { Doable } from '@libs/common/modules/lock/model/doable'
-import Redis from 'ioredis'
-import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub'
+import { Injectable } from '@nestjs/common';
+import { LockService } from '@libs/common/modules/lock/service/lock.service';
+import { Doable } from '@libs/common/modules/lock/model/doable';
+import Redis from 'ioredis';
+import { RedisPubSub } from '@libs/infrastructure/redis/pub-sub/redis-pub-sub';
 
 @Injectable()
 export class RedisLockService implements LockService {
@@ -16,33 +16,33 @@ export class RedisLockService implements LockService {
     name: string,
     timeout: number,
   ): Promise<Doable> {
-    const lockName = `lock.${name}`
-    const timeoutAt = await this.acquireLock(lockName, timeout)
+    const lockName = `lock.${name}`;
+    const timeoutAt = await this.acquireLock(lockName, timeout);
 
     return {
       done: async () => {
         if (Date.now() > timeoutAt) {
-          return
+          return;
         }
 
-        await this.releaseLock(lockName, timeoutAt)
+        await this.releaseLock(lockName, timeoutAt);
       },
-    }
+    };
   }
 
   private async acquireLock(
     lockName: string,
     timeout: number,
   ): Promise<number> {
-    const timeoutAt = Date.now() + timeout + 1
+    const timeoutAt = Date.now() + timeout + 1;
 
-    const result = await this.redis.set(lockName, timeoutAt, 'PX', timeout, 'NX')
+    const result = await this.redis.set(lockName, timeoutAt, 'PX', timeout, 'NX');
     if (result === 'OK') {
-      return timeoutAt
+      return timeoutAt;
     }
-    await this.waitRetry(lockName)
+    await this.waitRetry(lockName);
 
-    return this.acquireLock(lockName, timeout)
+    return this.acquireLock(lockName, timeout);
   }
 
   private waitRetry(
@@ -50,11 +50,11 @@ export class RedisLockService implements LockService {
   ) {
     return new Promise(resolve => {
       const callback = () => {
-        resolve(undefined)
-        this.redisPubSub.unsubscribe(lockName, callback)
-      }
-      return this.redisPubSub.subscribe(lockName, callback)
-    })
+        resolve(undefined);
+        this.redisPubSub.unsubscribe(lockName, callback);
+      };
+      return this.redisPubSub.subscribe(lockName, callback);
+    });
   }
 
   private async releaseLock(
@@ -67,14 +67,14 @@ export class RedisLockService implements LockService {
        else
          return 0
        end
-     `
+     `;
 
-    const result = await this.redis.eval(script, 1, lockName, timeoutAt.toString())
+    const result = await this.redis.eval(script, 1, lockName, timeoutAt.toString());
 
     if (result != 1) {
-      return
+      return;
     }
 
-    await this.redisPubSub.publish(lockName, '')
+    await this.redisPubSub.publish(lockName, '');
   }
 }

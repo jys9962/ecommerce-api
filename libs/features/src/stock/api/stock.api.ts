@@ -1,13 +1,11 @@
-import { StockDto } from '@libs/features/stock/api/stock.dto'
-
 export abstract class StockApi {
 
   /**
    * 재고량 조회
    */
   abstract get(
-    code: string[],
-  ): Promise<StockDto[]>
+    code: string,
+  ): Promise<number | null>
 
   /**
    * 재고량 수정 (음수/양수)
@@ -15,7 +13,7 @@ export abstract class StockApi {
   abstract update(
     code: string,
     quantity: number,
-  ): Promise<StockDto[]>
+  ): Promise<number>
 
   /**
    * 재고량 설정 (현재값 무시)
@@ -29,7 +27,7 @@ export abstract class StockApi {
    * 등록된 상품 코드에 대한 재고 정보 삭제
    */
   abstract delete(
-    code: string[],
+    code: string,
   ): Promise<void>
 
 }
