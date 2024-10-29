@@ -1,48 +1,38 @@
+import { ResultSync } from '@libs/common/model/result/result';
+import { PointLog } from '@libs/features/point/domain/point-log';
+import { RefundPointError, UsePointError } from '@libs/features/point/domain/point.error';
+import { PagingDto } from '@libs/common/dto/paging.dto';
+
 export abstract class PointApi {
 
-  /**
-   * 회원 포인트 조회
-   *
-   * @param memberId
-   */
   abstract get(
-    memberId: string,
+    userId: string,
   ): Promise<number>
 
-  /**
-   * 포인트 적립
-   * @param memberId
-   * @param amount
-   * @param expirationAt
-   */
+  abstract getHistories(
+    userId: string,
+    paging: PagingDto,
+  ): Promise<PointLog[]>
+
   abstract add(
-    memberId: string,
-    amount: number,
-    expirationAt: Date,
+    userId: string,
+    point: number,
+    memo: string,
+    expiredAt: Date | null,
   ): Promise<void>
 
-  /**
-   * 포인트 사용
-   * @param memberId
-   * @param amount 사용 포인트
-   * @param transactionId 거래번호
-   */
   abstract use(
-    memberId: string,
-    amount: number,
+    userId: string,
+    point: number,
     transactionId: string,
-  ): Promise<void>
+    memo: string,
+  ): ResultSync<void, UsePointError>
 
-  /**
-   * 포인트 사용 취소
-   * @param memberId
-   * @param amount 취소할 포인트
-   * @param transactionId 포인트 사용한 거래번호
-   */
   abstract refund(
-    memberId: string,
-    amount: number,
+    userId: string,
+    point: number,
     transactionId: string,
-  ): Promise<void>
+    memo: string,
+  ): ResultSync<void, RefundPointError>
 
 }

@@ -2,6 +2,10 @@ export type Timestamp = number & { _brand: 'Timestamp' }
 
 export namespace Timestamp {
 
+  export function now(): Timestamp {
+    return Date.now() as Timestamp;
+  }
+
   export function of(
     year: number,
     monthIndex?: number,
@@ -18,16 +22,22 @@ export namespace Timestamp {
     ...args: any
   ): Timestamp {
     if (args[0] instanceof Date) {
-      return args[0].getTime() as Timestamp
+      return args[0].getTime() as Timestamp;
     }
     // @ts-ignore
-    return new Date(...args).getTime() as Timestamp
+    return new Date(...args).getTime() as Timestamp;
   }
 
-  export const sec = (value = 1): Timestamp => 1000 * value as Timestamp
-  export const min = (value = 1): Timestamp => sec(60) * value as Timestamp
-  export const hour = (value = 1): Timestamp => min(60) * value as Timestamp
-  export const day = (value = 1): Timestamp => hour(24) * value as Timestamp
-  export const week = (value = 1): Timestamp => day(7) * value as Timestamp
+  export function nextDay(day = 1): Timestamp {
+    return (
+      Timestamp.now() + Timestamp.day(day)
+    ) as Timestamp;
+  }
+
+  export const sec = (value = 1): Timestamp => 1000 * value as Timestamp;
+  export const min = (value = 1): Timestamp => sec(60) * value as Timestamp;
+  export const hour = (value = 1): Timestamp => min(60) * value as Timestamp;
+  export const day = (value = 1): Timestamp => hour(24) * value as Timestamp;
+  export const week = (value = 1): Timestamp => day(7) * value as Timestamp;
 }
 
