@@ -1,7 +1,6 @@
 import { ResultSync } from '@libs/common/model/result/result';
 import { PointLog } from '@libs/features/point/domain/point-log';
 import { RefundPointError, UsePointError } from '@libs/features/point/domain/point.error';
-import { PagingDto } from '@libs/common/dto/paging.dto';
 
 export abstract class PointApi {
 
@@ -11,28 +10,27 @@ export abstract class PointApi {
 
   abstract getHistories(
     userId: string,
-    paging: PagingDto,
   ): Promise<PointLog[]>
 
   abstract add(
     userId: string,
     point: number,
-    memo: string,
-    expiredAt: Date | null,
+    expiredAt?: Date,
+    memo?: string,
   ): Promise<void>
 
   abstract use(
     userId: string,
     point: number,
     transactionId: string,
-    memo: string,
+    memo?: string,
   ): ResultSync<void, UsePointError>
 
   abstract refund(
     userId: string,
     point: number,
     transactionId: string,
-    memo: string,
+    memo?: string,
   ): ResultSync<void, RefundPointError>
 
 }

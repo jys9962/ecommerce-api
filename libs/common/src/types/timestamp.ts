@@ -2,6 +2,15 @@ export type Timestamp = number & { _brand: 'Timestamp' }
 
 export namespace Timestamp {
 
+  export function today(): Timestamp {
+    const date = new Date();
+    return Timestamp.of(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
+  }
+
   export function now(): Timestamp {
     return Date.now() as Timestamp;
   }

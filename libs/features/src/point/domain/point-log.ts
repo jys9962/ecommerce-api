@@ -1,6 +1,6 @@
 export interface AddPointLog {
   type: 'ADD';
-  point: number;
+  amount: number;
   memo: string;
   expiredAt: Date | null;
   createdAt: Date;
@@ -8,15 +8,15 @@ export interface AddPointLog {
 
 export interface UsePointLog {
   type: 'USE';
-  point: number;
+  amount: number;
   memo: string;
-  transactionId: string;
+  transactionId: string | null;
   createdAt: Date;
 }
 
 export interface RefundPointLog {
   type: 'REFUND';
-  point: number;
+  amount: number;
   memo: string;
   transactionId: string;
   createdAt: Date;
@@ -24,7 +24,7 @@ export interface RefundPointLog {
 
 export interface ExpiredPointLog {
   type: 'EXPIRED';
-  point: number;
+  amount: number;
   memo: string;
   createdAt: Date;
 }
